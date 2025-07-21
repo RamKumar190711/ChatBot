@@ -43,8 +43,6 @@ object FreeGPTApi {
                 return@withContext "API Error: $errorMsg"
             }
 
-
-
             // Extract the response text from choices array
             val message = json.getJSONArray("choices")
                 .getJSONObject(0)
