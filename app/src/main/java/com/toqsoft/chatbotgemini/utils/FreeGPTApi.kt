@@ -11,8 +11,7 @@ import org.json.JSONObject
 object FreeGPTApi {
     private val client = OkHttpClient()
     private const val URL = "https://openrouter.ai/api/v1/chat/completions"
-    private const val API_KEY = "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"  // Replace with your actual key!
-
+    private const val API_KEY = "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"
     suspend fun getResponse(prompt: String): String = withContext(Dispatchers.IO) {
         val requestBody = """
             {
@@ -32,7 +31,8 @@ object FreeGPTApi {
         val response = client.newCall(request).execute()
         val responseBody = response.body?.string() ?: return@withContext "No response from API"
 
-        println("Response JSON: $responseBody") // Debug print
+        println("Response JSON: $responseBody")
+
 
         try {
             val json = JSONObject(responseBody)
@@ -55,4 +55,6 @@ object FreeGPTApi {
             return@withContext "Failed to parse response"
         }
     }
+
 }
+

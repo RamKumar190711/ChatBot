@@ -1,6 +1,7 @@
 package com.toqsoft.chatbotgemini.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.toqsoft.chatbotgemini.databinding.ItemChatBinding
@@ -19,14 +20,25 @@ class ChatAdapter(private val messages: List<ChatMessage>) :
     override fun onBindViewHolder(holder: ChatViewHolder, position: Int) {
         val message = messages[position]
         with(holder.binding) {
-            if (message.isUser) {
-                userMessage.visibility = android.view.View.VISIBLE
-                botMessage.visibility = android.view.View.GONE
-                userMessage.text = message.message
+            if (message.isLoading) {
+                shimmerLayout.visibility = View.VISIBLE
+                shimmerLayout.startShimmer()
+
+                userMessage.visibility = View.GONE
+                botMessage.visibility = View.GONE
             } else {
-                userMessage.visibility = android.view.View.GONE
-                botMessage.visibility = android.view.View.VISIBLE
-                botMessage.text = message.message
+                shimmerLayout.stopShimmer()
+                shimmerLayout.visibility = View.GONE
+
+                if (message.isUser) {
+                    userMessage.visibility = View.VISIBLE
+                    botMessage.visibility = View.GONE
+                    userMessage.text = message.message
+                } else {
+                    userMessage.visibility = View.GONE
+                    botMessage.visibility = View.VISIBLE
+                    botMessage.text = message.message
+                }
             }
         }
     }

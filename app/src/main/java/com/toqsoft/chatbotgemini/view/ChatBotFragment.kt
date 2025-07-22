@@ -36,8 +36,20 @@ class ChatBotFragment : Fragment() {
                 addMessage(message, isUser = true)
                 binding.messageEditText.text?.clear()
 
+                // Add shimmer loading message
+                addMessage("", isUser = false, isLoading = true)
+
                 lifecycleScope.launch {
                     val reply = FreeGPTApi.getResponse(message)
+
+                    // Remove loading shimmer message
+                    val loadingIndex = chatMessages.indexOfFirst { it.isLoading }
+                    if (loadingIndex != -1) {
+                        chatMessages.removeAt(loadingIndex)
+                        adapter.notifyItemRemoved(loadingIndex)
+                    }
+
+                    // Add bot reply message
                     addMessage(reply, isUser = false)
                 }
             }
@@ -47,10 +59,11 @@ class ChatBotFragment : Fragment() {
 
         return  binding.root
     }
-private fun addMessage(text: String, isUser: Boolean) {
-    chatMessages.add(ChatMessage(text, isUser))
-    adapter.notifyItemInserted(chatMessages.size - 1)
-    binding.chatRecyclerView.scrollToPosition(chatMessages.size - 1)
-}
+    private fun addMessage(text: String, isUser: Boolean, isLoading: Boolean = false) {
+        chatMessages.add(ChatMessage(text, isUser, isLoading))
+        adapter.notifyItemInserted(chatMessages.size - 1)
+        binding.chatRecyclerView.scrollToPosition(chatMessages.size - 1)
+    }
+
 
 }
